@@ -30,6 +30,9 @@ DEFAULTS = {
 
     'JWT_RESPONSE_PAYLOAD_HANDLER':
     'rest_framework_jwt.utils.jwt_response_payload_handler',
+    
+    'JWT_BAD_AUTH_PAYLOAD_HANDLER':
+        'rest_framework_jwt.utils.jwt_bad_auth_payload_handler',
 
     'JWT_SECRET_KEY': settings.SECRET_KEY,
     'JWT_ALGORITHM': 'HS256',
@@ -54,6 +57,7 @@ IMPORT_STRINGS = (
     'JWT_PAYLOAD_GET_USER_ID_HANDLER',
     'JWT_PAYLOAD_GET_USERNAME_HANDLER',
     'JWT_RESPONSE_PAYLOAD_HANDLER',
+    'JWT_BAD_AUTH_PAYLOAD_HANDLER',
 )
 
 api_settings = APISettings(USER_SETTINGS, DEFAULTS, IMPORT_STRINGS)
