@@ -9,7 +9,7 @@ from .serializers import (
 )
 
 jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
-
+jwt_bad_auth_payload_handler = api_settings.JWT_BAD_AUTH_PAYLOAD_HANDLER
 
 class JSONWebTokenAPIView(APIView):
     """
@@ -70,6 +70,23 @@ class ObtainJSONWebToken(JSONWebTokenAPIView):
     Returns a JSON Web Token that can be used for authenticated requests.
     """
     serializer_class = JSONWebTokenSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.object.get('user') or request.user
+            token = serializer.object.get('token')
+            response_data = jwt_response_payload_handler(token, user, request)
+
+            return Response(response_data)
+
+        else:
+            response_data = jwt_bad_auth_payload_handler(serializer_errors=serializer.errors,
+                                                         status=status.HTTP_400_BAD_REQUEST)
+            if response_data:
+                return Response(response_data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class VerifyJSONWebToken(JSONWebTokenAPIView):
